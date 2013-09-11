@@ -6,7 +6,11 @@
 GET     /                           controllers.Application.index
 
 # Boards
-GET 		/:board_letter 			controllers.Board.show(board_letter)
+GET 		/:short_name 			controllers.Board.show(short_name)
+
+# Threads
+GET 		/:short_name/threads/:id 		controllers.Thread.show(short_name, id: Int)
+POST 		/:short_name/threads 				controllers.Thread.create(short_name)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

@@ -1,9 +1,23 @@
-@(board: models.Board)
+@(board: models.Board, threadForm: Form[(String, String)])
 
 @main {
   <div class='row'>
     <div class='large-12 columns'>
       <h2>/@board.shortName/ - @board.name</h2>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='large-6 columns'>
+      @helper.form(action = routes.Thread.create(board.shortName)) {
+
+        @helper.inputText(threadForm("Title"))
+
+        @helper.textarea(threadForm("Content"))
+
+        <input type="Submit" class='button' />
+
+      }
     </div>
   </div>
 }

@@ -1,6 +1,8 @@
 package controllers
 
 import play.api._
+import play.api.data._
+import play.api.data.Forms._
 import play.api.db._
 import play.api.mvc._
 import play.api.Play.current
@@ -14,14 +16,21 @@ object Board extends Controller {
 
   lazy val database = Database.forDataSource(DB.getDataSource())
 
+  val threadForm = Form(
+    tuple(
+      "Title" -> text,
+      "Post" -> text
+    )
+  )
+
   def show(boardLetter: String) = Action {
     database withSession {
 
       val boards = for {
-        b <- models.Boards if b.id === 1
+        b <- Boards if b.id === 1
       } yield (b)
 
-      Ok(views.html.board(boards.list.head))
+      Ok(views.html.board(boards.list.head, threadForm))
     }
   }
 }
