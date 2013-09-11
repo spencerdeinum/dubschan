@@ -7,7 +7,7 @@ import play.api.Play.current
 
 import models.Boards
 
-import scala.slick.driver.H2Driver.simple._
+import scala.slick.driver.PostgresDriver.simple._
 import Database.threadLocalSession
 
 object Board extends Controller {
