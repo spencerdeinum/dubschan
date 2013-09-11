@@ -19,7 +19,7 @@ object Board extends Controller {
   val threadForm = Form(
     tuple(
       "Title" -> text,
-      "Post" -> text
+      "Content" -> text
     )
   )
 
