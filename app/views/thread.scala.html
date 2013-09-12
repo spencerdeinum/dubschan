@@ -1,4 +1,4 @@
-@(board: Board, thread: models.Thread, posts: List[models.Post])
+@(board: Board, thread: models.Thread, posts: List[models.Post], postForm: Form[String])
 
 @main {
   <div class='row'>
@@ -9,14 +9,26 @@
 
   <div class='row'>
     <div class='large-12 columns'>
-      <h4>@thread.title - @thread.created_at - @thread.id</h4>
+      <h4>@thread.title - @posts.head.id</h4>
       @for( p <- posts ) {
         <div class='row'>
           <div class='large-12 columns'>
+            <h4>@p.created_at - @p.id</h4>
             @p.content
           </div>
         </div>
         <hr />
+      }
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='large-6 columns'>
+      <h4>Respond to thread</h4>
+      @helper.form( action = routes.Post.create(board.shortName, thread.id) ) {
+        @helper.textarea(postForm("Content"))
+
+        <input type='Submit' class='button' />
       }
     </div>
   </div>

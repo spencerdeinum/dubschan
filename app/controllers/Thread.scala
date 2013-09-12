@@ -24,6 +24,8 @@ object Thread extends Controller {
     )
   )
 
+  val postForm =  Form("Content" -> text)
+
   def show(boardShortName: String, threadId: Int) = Action {
     database withSession {
       val board = Query(Boards).filter( _.shortName === boardShortName ).first
@@ -32,7 +34,7 @@ object Thread extends Controller {
 
       val posts = thread.posts
 
-      Ok(views.html.thread(board, thread, posts))
+      Ok(views.html.thread(board, thread, posts, postForm))
     }
   }
 
@@ -42,17 +44,7 @@ object Thread extends Controller {
 
     val newThread = Threads.createNewThread(title, content)
 
-    Ok(views.html.homepage())
+    Redirect(routes.Thread.show(boardShortName, newThread.id))
   }
 
-  //def show(boardLetter: String) = Action {
-  //  database withSession {
-
-  //    val boards = for {
-  //      b <- models.Boards if b.id === 1
-  //    } yield (b)
-
-  //    Ok(views.html.board(boards.list.head))
-  //  }
-  //}
 }
