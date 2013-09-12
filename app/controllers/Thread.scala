@@ -7,6 +7,7 @@ import play.api.db._
 import play.api.mvc._
 import play.api.Play.current
 
+import models.Boards
 import models.Threads
 
 import scala.slick.driver.PostgresDriver.simple._
@@ -23,7 +24,17 @@ object Thread extends Controller {
     )
   )
 
-  def show(boardShortName: String, threadId: Int) = TODO
+  def show(boardShortName: String, threadId: Int) = Action {
+    database withSession {
+      val board = Query(Boards).filter( _.shortName === boardShortName ).first
+
+      val thread = Query(Threads).filter( _.id === threadId).first
+
+      val posts = thread.posts
+
+      Ok(views.html.thread(board, thread, posts))
+    }
+  }
 
   def create(boardShortName: String) = Action { implicit request =>
 

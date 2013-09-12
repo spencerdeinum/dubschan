@@ -10,7 +10,7 @@
   @for( (thread, posts) <- threads ) {
     <div class='row'>
       <div class='large-12 columns'>
-        <h4>@thread.title</h4>
+        <h4>@thread.title - @thread.created_at - @thread.id <a href='@routes.Thread.show(board.shortName, thread.id)'>View</a></h4>
         @for( p <- posts ) {
           <div class='row'>
             <div class='large-12 columns'>
@@ -25,6 +25,7 @@
 
   <div class='row'>
     <div class='large-6 columns'>
+      <h4>New Thread</h4>
       @helper.form(action = routes.Thread.create(board.shortName)) {
 
         @helper.inputText(threadForm("Title"))

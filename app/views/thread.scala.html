@@ -1,0 +1,23 @@
+@(board: Board, thread: models.Thread, posts: List[models.Post])
+
+@main {
+  <div class='row'>
+    <div class='large-12 columns'>
+      <h2>/@board.shortName/ - @board.name</h2>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='large-12 columns'>
+      <h4>@thread.title - @thread.created_at - @thread.id</h4>
+      @for( p <- posts ) {
+        <div class='row'>
+          <div class='large-12 columns'>
+            @p.content
+          </div>
+        </div>
+        <hr />
+      }
+    </div>
+  </div>
+}
