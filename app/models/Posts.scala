@@ -2,7 +2,7 @@ package models
 
 import scala.slick.driver.PostgresDriver.simple._
 
-case class Post(id: Int, threadID: Int, created_at: java.sql.Timestamp, post: String)
+case class Post(id: Int, threadID: Int, created_at: java.sql.Timestamp, content: String)
 
 object Posts extends Table[Post]("posts") {
   def id = column[Int]("id", O.PrimaryKey)

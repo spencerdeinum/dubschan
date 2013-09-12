@@ -1,4 +1,4 @@
-@(board: models.Board, threadForm: Form[(String, String)])
+@(board: models.Board, threads: List[(models.Thread, List[models.Post])], threadForm: Form[(String, String)])
 
 @main {
   <div class='row'>
@@ -6,6 +6,22 @@
       <h2>/@board.shortName/ - @board.name</h2>
     </div>
   </div>
+
+  @for( (thread, posts) <- threads ) {
+    <div class='row'>
+      <div class='large-12 columns'>
+        <h4>@thread.title</h4>
+        @for( p <- posts ) {
+          <div class='row'>
+            <div class='large-12 columns'>
+              @p.content
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+    <hr />
+  }
 
   <div class='row'>
     <div class='large-6 columns'>

@@ -6,7 +6,11 @@ import play.api.Play.current
 import scala.slick.driver.PostgresDriver.simple._
 import Database.threadLocalSession
 
-case class Thread(id: Int, created_at: java.sql.Timestamp, title: String)
+case class Thread(id: Int, created_at: java.sql.Timestamp, title: String) {
+  def posts = (for {
+    p <- Posts if p.threadID === id
+  } yield(p)).list
+}
 
 object Threads extends Table[Thread]("threads") {
 
