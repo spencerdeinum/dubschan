@@ -14,9 +14,9 @@
         <div class='row'>
           <div class='large-12 columns'>
             <h4>@p.created_at - @p.id</h4>
-            @p.imagePath match {
-              case Some(imagePath) => {
-                <img src='@imagePath' />
+            @p.imageName match {
+              case Some(imageName) => {
+                <img src='@routes.Image.show(p.id, imageName)' />
               }
                 case _ => {}
             }

@@ -6,7 +6,7 @@
 GET     /                           controllers.Application.index
 
 # Boards
-GET 		/:short_name 			controllers.Board.show(short_name)
+GET 		/:short_name/ 			controllers.Board.show(short_name)
 
 # Threads
 GET 		/:short_name/thread/:id 		controllers.Thread.show(short_name, id: Int)
@@ -17,3 +17,6 @@ POST 		/:short_name/thread/:thread_id/post 		controllers.Post.create(short_name,
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Map images to db posts
+GET 		/images/:postId/:imageName 					controllers.Image.show(postId: Int, imageName: String)

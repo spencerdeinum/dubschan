@@ -1,7 +1,6 @@
 package controllers
 
 import play.api._
-import play.api.libs.Files
 import play.api.data._
 import play.api.data.Forms._
 import play.api.db._
@@ -14,6 +13,9 @@ import models.Posts
 
 import scala.slick.driver.PostgresDriver.simple._
 import Database.threadLocalSession
+
+import java.io.BufferedInputStream
+import java.io.FileInputStream
 
 object Post extends Controller {
 
@@ -33,7 +35,11 @@ object Post extends Controller {
       val image = request.body.file("Image")
 
       val imageData = image match {
-        case Some(image) => (Some(image.filename), Some(Files.readFile(image.ref.file).map(_.toByte).toArray))
+        case Some(image) => {
+          val bufferedInputStream = new BufferedInputStream(new FileInputStream(image.ref.file))
+          val imageData = Stream.continually(bufferedInputStream.read).takeWhile(_ != -1).map(_.toByte).toArray
+          (Some(image.filename), Some(imageData))
+        }
         case None => (None, None)
       }
 
