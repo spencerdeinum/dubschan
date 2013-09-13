@@ -12,6 +12,3 @@ addSbtPlugin("play" % "sbt-plugin" % "2.1.3")
 
 // Auto reload plugin
 addSbtPlugin("com.jamesward" %% "play-auto-refresh" % "0.0.4")
-
-// Sass compilation plugin
-addSbtPlugin("net.litola" % "play-sass" % "0.2.0")

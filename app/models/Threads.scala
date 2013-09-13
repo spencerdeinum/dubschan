@@ -27,11 +27,11 @@ object Threads extends Table[Thread]("threads") {
   def createNewThread(title: String, content: String): Thread = {
     lazy val database = Database.forDataSource(DB.getDataSource())
     database withSession {
-      val now = new java.sql.Timestamp( (new java.util.Date()) getTime )
+      val now = new java.sql.Timestamp( (new java.util.Date()).getTime() )
 
       val thread = Threads.forInsert returning Threads insert (now, title)
 
-      Posts.forInsert insert (thread.id, now, content)
+      Posts.forInsert insert (thread.id, now, content, Option(""))
 
       thread
     }

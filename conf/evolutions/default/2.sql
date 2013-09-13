@@ -12,6 +12,7 @@ CREATE TABLE posts (
   thread_id INT,
   created_at timestamp,
   content varchar(255),
+	image_path varchar(255) NULL,
   PRIMARY KEY (id)
 );
 
