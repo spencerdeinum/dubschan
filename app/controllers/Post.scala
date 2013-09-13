@@ -1,6 +1,7 @@
 package controllers
 
 import play.api._
+import play.api.libs.Files
 import play.api.data._
 import play.api.data.Forms._
 import play.api.db._
@@ -13,8 +14,6 @@ import models.Posts
 
 import scala.slick.driver.PostgresDriver.simple._
 import Database.threadLocalSession
-
-import java.io.File
 
 object Post extends Controller {
 
@@ -31,15 +30,14 @@ object Post extends Controller {
 
       val now = new java.sql.Timestamp( (new java.util.Date()).getTime() )
 
-      val image = request.body.file("Image").map { image =>
-        val filename = image.filename
-        val contentType = image.contentType
-        val imagePath = "/assets/images/" + filename
-        image.ref.moveTo(new File("public/images/" + filename))
-        imagePath
+      val image = request.body.file("Image")
+
+      val imageData = image match {
+        case Some(image) => (Some(image.filename), Some(Files.readFile(image.ref.file).map(_.toByte).toArray))
+        case None => (None, None)
       }
 
-      val post = Posts.forInsert insert((thread.id, now, content, image))
+      val post = Posts.forInsert insert((thread.id, now, content, imageData._1, imageData._2))
 
       Redirect(routes.Thread.show(boardShortName, thread.id))
     }

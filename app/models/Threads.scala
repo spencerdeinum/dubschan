@@ -31,7 +31,7 @@ object Threads extends Table[Thread]("threads") {
 
       val thread = Threads.forInsert returning Threads insert (now, title)
 
-      Posts.forInsert insert (thread.id, now, content, Option(""))
+      Posts.forInsert insert (thread.id, now, content, None, None)
 
       thread
     }
