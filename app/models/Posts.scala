@@ -5,7 +5,7 @@ import scala.slick.driver.PostgresDriver.simple._
 case class Post(id: Int, threadID: Int, created_at: java.sql.Timestamp, content: String, imageName: Option[String]) {
   def s3Url: Option[String] = {
     imageName match {
-      case Some(imageName) => Some(s"http://s3-us-west-2.amazonaws.com/dubschan/$imageName")
+      case Some(imageName) => Some(s"http://s3.amazonaws.com/dubschan/$imageName")
       case None => None
     }
   }
