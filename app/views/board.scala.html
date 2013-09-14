@@ -8,29 +8,19 @@
   </div>
 
   @for( (thread, posts) <- threads ) {
-    <div class='row'>
-      <div class='large-12 columns'>
-        <h4>@thread.title - @thread.created_at - @posts.head.id <a href='@routes.Thread.show(board.shortName, thread.id)'>View</a></h4>
-        @for( p <- posts ) {
-          <div class='row'>
-            <div class='large-12 columns'>
-              @p.content
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-    <hr />
+    @views.html.posts(thread, posts, Some(routes.Thread.show(board.shortName, thread.id).url))
   }
 
   <div class='row'>
     <div class='large-6 columns'>
       <h4>New Thread</h4>
-      @helper.form(action = routes.Thread.create(board.shortName)) {
+      @helper.form(action = routes.Thread.create(board.shortName), 'enctype -> "multipart/form-data") {
 
         @helper.inputText(threadForm("Title"))
 
         @helper.textarea(threadForm("Content"))
+
+        <input type='file' name='Image' />
 
         <input type='Submit' class='button' />
 

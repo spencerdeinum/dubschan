@@ -13,6 +13,9 @@ import models.Threads
 import scala.slick.driver.PostgresDriver.simple._
 import Database.threadLocalSession
 
+import java.io.BufferedInputStream
+import java.io.FileInputStream
+
 object Thread extends Controller {
 
   lazy val database = Database.forDataSource(DB.getDataSource())
@@ -38,11 +41,22 @@ object Thread extends Controller {
     }
   }
 
-  def create(boardShortName: String) = Action { implicit request =>
+  def create(boardShortName: String) = Action(parse.multipartFormData) { implicit request =>
 
     val (title, content) = threadForm.bindFromRequest.get
 
-    val newThread = Threads.createNewThread(title, content)
+    val image = request.body.file("Image")
+
+    val imageData = image match {
+      case Some(image) => {
+        val bufferedInputStream = new BufferedInputStream(new FileInputStream(image.ref.file))
+        val imageData = Stream.continually(bufferedInputStream.read).takeWhile(_ != -1).map(_.toByte).toArray
+        (Some(image.filename), Some(imageData))
+      }
+      case None => (None, None)
+    }
+
+    val newThread = Threads.createNewThread(title, content, imageData)
 
     Redirect(routes.Thread.show(boardShortName, newThread.id))
   }

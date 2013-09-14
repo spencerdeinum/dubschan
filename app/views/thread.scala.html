@@ -7,31 +7,12 @@
     </div>
   </div>
 
-  <div class='row'>
-    <div class='large-12 columns'>
-      <h4>@thread.title - @posts.head.id</h4>
-      @for( p <- posts ) {
-        <div class='row'>
-          <div class='large-12 columns'>
-            <h4>@p.created_at - @p.id</h4>
-            @p.imageName match {
-              case Some(imageName) => {
-                <img src='@routes.Image.show(p.id, imageName)' />
-              }
-                case _ => {}
-            }
-          </div>
-          <div class='large-12 columns'>@p.content</div>
-        </div>
-        <hr />
-      }
-    </div>
-  </div>
+  @views.html.posts(thread, posts, None)
 
   <div class='row'>
     <div class='large-6 columns'>
       <h4>Respond to thread</h4>
-      @helper.form( action = routes.Post.create(board.shortName, thread.id), 'enctype -> "multipart/form-data" ) {
+      @helper.form(action = routes.Post.create(board.shortName, thread.id), 'enctype -> "multipart/form-data") {
         @helper.textarea(postForm("Content"))
 
         <input type='file' name='Image' />
