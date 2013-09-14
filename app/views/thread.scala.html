@@ -2,7 +2,7 @@
 
 @main {
   <div class='row'>
-    <div class='large-12 columns'>
+    <div class='small-12 columns'>
       <h2>/@board.shortName/ - @board.name</h2>
     </div>
   </div>
@@ -10,7 +10,7 @@
   @views.html.posts(thread, posts, None)
 
   <div class='row'>
-    <div class='large-6 columns'>
+    <div class='small-6 columns'>
       <h4>Respond to thread</h4>
       @helper.form(action = routes.Post.create(board.shortName, thread.id), 'enctype -> "multipart/form-data") {
         @helper.textarea(postForm("Content"))
