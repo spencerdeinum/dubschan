@@ -13,7 +13,6 @@ CREATE TABLE posts (
   created_at timestamp,
   content varchar(255),
 	image_name varchar(255) NULL,
-	image_data bytea NULL,
   PRIMARY KEY (id)
 );
 

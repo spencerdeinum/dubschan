@@ -13,8 +13,7 @@ import models.Threads
 import scala.slick.driver.PostgresDriver.simple._
 import Database.threadLocalSession
 
-import java.io.BufferedInputStream
-import java.io.FileInputStream
+import libraries.ImageUploader
 
 object Thread extends Controller {
 
@@ -47,16 +46,14 @@ object Thread extends Controller {
 
     val image = request.body.file("Image")
 
-    val imageData = image match {
+    val imageName = image match {
       case Some(image) => {
-        val bufferedInputStream = new BufferedInputStream(new FileInputStream(image.ref.file))
-        val imageData = Stream.continually(bufferedInputStream.read).takeWhile(_ != -1).map(_.toByte).toArray
-        (Some(image.filename), Some(imageData))
+        Some(ImageUploader.upload(image))
       }
-      case None => (None, None)
+      case None => None
     }
 
-    val newThread = Threads.createNewThread(title, content, imageData)
+    val newThread = Threads.createNewThread(title, content, imageName)
 
     Redirect(routes.Thread.show(boardShortName, newThread.id))
   }

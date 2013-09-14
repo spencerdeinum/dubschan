@@ -17,6 +17,3 @@ POST 		/:short_name/thread/:thread_id/post 		controllers.Post.create(short_name,
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
-
-# Map images to db posts
-GET 		/images/:postId/:imageName 					controllers.Image.show(postId: Int, imageName: String)

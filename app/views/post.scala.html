@@ -1,10 +1,10 @@
 @(post: models.Post)
 
-@post.imageName match {
-  case Some(imageName) => {
+@post.s3Url match {
+  case Some(s3Url) => {
     <div class='row'>
       <div class='small-4 columns'>
-        <img src='@routes.Image.show(post.id, imageName)' />
+        <img src='@s3Url' />
       </div>
       <div class='small-8 columns'>@post.content</div>
     </div>

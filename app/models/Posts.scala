@@ -2,7 +2,14 @@ package models
 
 import scala.slick.driver.PostgresDriver.simple._
 
-case class Post(id: Int, threadID: Int, created_at: java.sql.Timestamp, content: String, imageName: Option[String], imageData: Option[Array[Byte]])
+case class Post(id: Int, threadID: Int, created_at: java.sql.Timestamp, content: String, imageName: Option[String]) {
+  def s3Url: Option[String] = {
+    imageName match {
+      case Some(imageName) => Some(s"http://s3-us-west-2.amazonaws.com/dubschan/$imageName")
+      case None => None
+    }
+  }
+}
 
 object Posts extends Table[Post]("posts") {
   def id = column[Int]("id", O.PrimaryKey)
@@ -19,7 +26,7 @@ object Posts extends Table[Post]("posts") {
 
   def thread = foreignKey("thread_fk", threadID, models.Threads)(_.id)
 
-  def * = id ~ threadID ~ created_at ~ content ~ imageName ~ imageData <> (Post, Post.unapply _)
+  def * = id ~ threadID ~ created_at ~ content ~ imageName <> (Post, Post.unapply _)
 
-  def forInsert = threadID ~ created_at ~ content ~ imageName ~ imageData
+  def forInsert = threadID ~ created_at ~ content ~ imageName
 }

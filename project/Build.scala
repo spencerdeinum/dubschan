@@ -12,7 +12,8 @@ object ApplicationBuild extends Build {
     jdbc,
     anorm,
     "com.typesafe.slick" %% "slick" % "1.0.0",
-    "postgresql" % "postgresql" % "9.1-901-1.jdbc4"
+    "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
+    "com.amazonaws" % "aws-java-sdk" % "1.3.11"
   )
 
 

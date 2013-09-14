@@ -24,14 +24,14 @@ object Threads extends Table[Thread]("threads") {
 
   def forInsert = created_at ~ title 
 
-  def createNewThread(title: String, content: String, imageData: (Option[String], Option[Array[Byte]])): Thread = {
+  def createNewThread(title: String, content: String, imageName: Option[String]): Thread = {
     lazy val database = Database.forDataSource(DB.getDataSource())
     database withSession {
       val now = new java.sql.Timestamp( (new java.util.Date()).getTime() )
 
       val thread = Threads.forInsert returning Threads insert (now, title)
 
-      Posts.forInsert insert (thread.id, now, content, imageData._1, imageData._2)
+      Posts.forInsert insert (thread.id, now, content, imageName)
 
       thread
     }
