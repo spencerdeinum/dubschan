@@ -2,7 +2,7 @@
 
 @post.imageName match {
   case Some(imageName) => {
-    <div class='row post'>
+    <div class='row'>
       <div class='small-4 columns'>
         <img src='@routes.Image.show(post.id, imageName)' />
       </div>
@@ -10,7 +10,7 @@
     </div>
   }
   case None => {
-    <div class='row post'>
+    <div class='row'>
       <div class='small12 columns'>@post.content</div>
     </div>
   }
