@@ -2,7 +2,6 @@ package libraries
 
 import play.api.mvc.MultipartFormData.FilePart
 import play.api.libs.Files.TemporaryFile
-import play.api.libs.MimeTypes
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -19,7 +18,7 @@ object ImageUploader {
 
     // Detect the mimetype from the uploaded file and set the metadata so S3
     // will serve it correctly
-    val mimeType = MimeTypes.forFileName(image.filename)
+    val mimeType = image.contentType
     mimeType match {
       case Some(mimeType) => {
         val objectMetadata = new ObjectMetadata
