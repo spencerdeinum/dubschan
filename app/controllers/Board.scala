@@ -28,19 +28,15 @@ object Board extends Controller {
   def show(boardLetter: String) = Action {
     database withSession {
 
-      val boards = for {
-        b <- Boards if b.id === 1
-      } yield (b)
+      val board = Query(Boards).filter(_.id === 1).first
 
-      val threads = for {
-        t <- Threads
-      } yield(t)
+      val threads = Query(Threads).list
 
-      val posts = threads.list.map { case t: models.Thread => t.posts }
+      val posts = threads.map(_.posts)
 
-      val threadsWithPosts = threads.list zip posts
+      val threadsWithPosts = threads zip posts
 
-      Ok(views.html.board(boards.list.head, threadsWithPosts, threadForm))
+      Ok(views.html.board(board, threadsWithPosts, threadForm))
     }
   }
 }

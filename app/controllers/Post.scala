@@ -29,8 +29,6 @@ object Post extends Controller {
     database withSession {
       val thread = Query(Threads).filter( _.id === threadId).first
 
-      val now = new java.sql.Timestamp( (new java.util.Date()).getTime() )
-
       val image = request.body.file("Image")
 
       val imageName = image match {
@@ -40,6 +38,7 @@ object Post extends Controller {
         case None => (None)
       }
 
+      val now = new java.sql.Timestamp( (new java.util.Date()).getTime() )
       val post = Posts.forInsert insert((thread.id, now, content, imageName))
 
       Redirect(routes.Thread.show(boardShortName, thread.id))

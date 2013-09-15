@@ -2,7 +2,7 @@
 
 <div class='row posts'>
   <div class='small-12 columns first post'>
-    <h4>@thread.title - @thread.created_at - @posts.head.id
+    <h4>@thread.title - @thread.createdAt - @posts.head.id
       @link match {
         case Some(link) => {
           <a href='@link'>View</a>
@@ -14,7 +14,7 @@
   </div>
   @for( p <- posts.drop(1) ) {
     <div class='small-12 columns post'>
-      <h5>@p.created_at - @p.id</h5>
+      <h5>@p.createdAt - @p.id</h5>
       @views.html.post(p)
     </div>
   }
