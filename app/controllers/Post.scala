@@ -25,24 +25,27 @@ object Post extends Controller {
 
   def create(boardShortName: String, threadId: Int) = Action(parse.multipartFormData) { implicit request =>
 
-    val content = postForm.bindFromRequest.get
+    postForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(views.html.homepage()),
+      content => {
+        database withSession {
+          val thread = Query(Threads).filter( _.id === threadId).first
 
-    database withSession {
-      val thread = Query(Threads).filter( _.id === threadId).first
+          val image = request.body.file("Image")
 
-      val image = request.body.file("Image")
+          val imageName = image match {
+            case Some(image) => {
+              Some(ImageUploader.upload(image))
+            }
+            case None => (None)
+          }
 
-      val imageName = image match {
-        case Some(image) => {
-          Some(ImageUploader.upload(image))
+          val now = new java.sql.Timestamp( (new java.util.Date()).getTime() )
+          val post = Posts.forInsert insert((thread.id, now, content, imageName))
+
+          Redirect(routes.Thread.show(boardShortName, thread.id))
         }
-        case None => (None)
       }
-
-      val now = new java.sql.Timestamp( (new java.util.Date()).getTime() )
-      val post = Posts.forInsert insert((thread.id, now, content, imageName))
-
-      Redirect(routes.Thread.show(boardShortName, thread.id))
-    }
+    )
   }
 }
