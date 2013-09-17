@@ -15,12 +15,13 @@ import scala.slick.driver.PostgresDriver.simple._
 import Database.threadLocalSession
 
 import libraries.ImageUploader
+import libraries.Forms
 
 object Post extends Controller {
 
   lazy val database = Database.forDataSource(DB.getDataSource())
 
-  val postForm = Form("Content" -> text)
+  val postForm = Forms.postForm
 
   def create(boardShortName: String, threadId: Int) = Action(parse.multipartFormData) { implicit request =>
 

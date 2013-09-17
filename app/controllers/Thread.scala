@@ -14,19 +14,15 @@ import scala.slick.driver.PostgresDriver.simple._
 import Database.threadLocalSession
 
 import libraries.ImageUploader
+import libraries.Forms
 
 object Thread extends Controller {
 
   lazy val database = Database.forDataSource(DB.getDataSource())
 
-  val threadForm = Form(
-    tuple(
-      "Title" -> text,
-      "Content" -> text
-    )
-  )
+  val threadForm = Forms.threadForm
 
-  val postForm =  Form("Content" -> text)
+  val postForm = Forms.postForm
 
   def show(boardShortName: String, threadId: Int) = Action {
     database withSession {
@@ -42,20 +38,22 @@ object Thread extends Controller {
 
   def create(boardShortName: String) = Action(parse.multipartFormData) { implicit request =>
 
-    val (title, content) = threadForm.bindFromRequest.get
+    threadForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(views.html.homepage()),
+      form => {
+        val image = request.body.file("Image")
+        val imageName = image match {
+          case Some(image) => {
+            Some(ImageUploader.upload(image))
+          }
+          case None => None
+        }
 
-    val image = request.body.file("Image")
+        val newThread = Threads.createNewThread(form._1, form._2, imageName)
 
-    val imageName = image match {
-      case Some(image) => {
-        Some(ImageUploader.upload(image))
+        Redirect(routes.Thread.show(boardShortName, newThread.id))
       }
-      case None => None
-    }
-
-    val newThread = Threads.createNewThread(title, content, imageName)
-
-    Redirect(routes.Thread.show(boardShortName, newThread.id))
+    )
   }
 
 }
