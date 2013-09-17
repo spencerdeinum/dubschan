@@ -21,18 +21,23 @@ object Board extends Controller {
 
   val threadForm = Forms.threadForm
 
-  def show(boardLetter: String) = Action {
+  def show(boardShortName: String) = Action {
     database withSession {
 
-      val board = Query(Boards).filter(_.id === 1).first
+      val boardQuery = Query(Boards).filter(_.shortName === boardShortName).firstOption
 
-      val threads = Query(Threads).list
+      boardQuery match {
+        case None => NotFound
+        case Some(board) => {
+          val threads = Query(Threads).list
 
-      val posts = threads.map(_.posts)
+          val posts = threads.map(_.posts)
 
-      val threadsWithPosts = threads zip posts
+          val threadsWithPosts = threads zip posts
 
-      Ok(views.html.board(board, threadsWithPosts, threadForm))
+          Ok(views.html.board(board, threadsWithPosts, threadForm))
+        }
+      }
     }
   }
 }

@@ -26,13 +26,19 @@ object Thread extends Controller {
 
   def show(boardShortName: String, threadId: Int) = Action {
     database withSession {
-      val board = Query(Boards).filter( _.shortName === boardShortName ).first
+      val boardQuery = Query(Boards).filter( _.shortName === boardShortName ).firstOption
 
-      val thread = Query(Threads).filter( _.id === threadId).first
+      boardQuery match {
+        case None => NotFound
+        case Some(board) => {
+          val threadQuery = Query(Threads).filter( _.id === threadId).firstOption
+          threadQuery match {
+            case None => NotFound
+            case Some(thread) => Ok(views.html.thread(board, thread, thread.posts, postForm))
+          }
+        }
+      }
 
-      val posts = thread.posts
-
-      Ok(views.html.thread(board, thread, posts, postForm))
     }
   }
 
@@ -49,11 +55,18 @@ object Thread extends Controller {
           case None => None
         }
 
-        val newThread = Threads.createNewThread(form._1, form._2, imageName)
+        database withSession {
+          val board = Query(Boards).filter( _.shortName === boardShortName ).firstOption
 
-        Redirect(routes.Thread.show(boardShortName, newThread.id))
+          board match {
+            case None => NotFound
+            case Some(board) => {
+              val newThread = Threads.createNewThread(board.id, form._1, form._2, imageName)
+              Redirect(routes.Thread.show(board.shortName, newThread.id))
+            }
+          }
+        }
       }
     )
   }
-
 }
