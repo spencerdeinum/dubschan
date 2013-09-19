@@ -35,7 +35,7 @@ object Post extends Controller {
 
           val imageName = image match {
             case Some(image) => {
-              Some(ImageUploader.upload(image))
+              ImageUploader.upload(image)
             }
             case None => (None)
           }

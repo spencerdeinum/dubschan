@@ -50,7 +50,7 @@ object Thread extends Controller {
         val image = request.body.file("Image")
         val imageName = image match {
           case Some(image) => {
-            Some(ImageUploader.upload(image))
+            ImageUploader.upload(image)
           }
           case None => None
         }
