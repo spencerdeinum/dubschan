@@ -8,11 +8,11 @@ object Forms {
 
   def threadForm = Form(
     tuple(
-      "Title" -> text.verifying(nonEmpty, maxLength(255)),
-      "Content" -> text.verifying(nonEmpty, maxLength(255))
+      "Title" -> text.verifying(maxLength(255)),
+      "Content" -> text.verifying(maxLength(255))
     )
   )
 
-  def postForm =  Form("Content" -> text.verifying(nonEmpty, maxLength(0)))
+  def postForm =  Form("Content" -> text.verifying(maxLength(255)))
 
 }
