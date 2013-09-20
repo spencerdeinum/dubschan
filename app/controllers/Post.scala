@@ -4,6 +4,10 @@ import play.api._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.db._
+import play.api.libs.EventSource
+import play.api.libs.iteratee.Concurrent
+import play.api.libs.iteratee.Enumeratee
+import play.api.libs.json.JsValue
 import play.api.mvc._
 import play.api.Play.current
 
@@ -43,9 +47,24 @@ object Post extends Controller {
           val now = new java.sql.Timestamp( (new java.util.Date()).getTime() )
           val post = Posts.forInsert insert((thread.id, now, content, imageName))
 
+          Logger.info(s"Pushing $threadId onto threadChannel")
+          Logger.info(s"data: $threadId")
+          threadChannel.push("data: " + threadId)
+
           Redirect(routes.Thread.show(boardShortName, thread.id))
         }
       }
     )
+  }
+
+  val (postsOut, threadChannel) = Concurrent.broadcast[String]
+
+  def filter(threadId: Int) = Enumeratee.filter[String] {
+    message: String => message.contains(threadId.toString)
+  }
+
+  def feed(threadId: Int) = Action {
+    Logger.info(s"Streaming for $threadId")
+    Ok.stream(postsOut &> filter(threadId) &> Concurrent.buffer(20) &> EventSource()).as("text/event-stream")
   }
 }

@@ -14,6 +14,7 @@ POST 		/:short_name/thread 				controllers.Thread.create(short_name)
 
 # Posts
 POST 		/:short_name/thread/:thread_id/post 		controllers.Post.create(short_name, thread_id: Int)
+GET     /thread/:thread_id/post/feed            controllers.Post.feed(thread_id: Int)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
