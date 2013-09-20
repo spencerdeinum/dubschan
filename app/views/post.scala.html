@@ -4,7 +4,9 @@
   case Some(s3Url) => {
     <div class='row'>
       <div class='small-4 columns'>
-        <img src='@s3Url' />
+        <a href='@s3Url' target='_blank'>
+          <img src='@s3Url' />
+        </a>
       </div>
       <div class='small-8 columns'>@post.content</div>
     </div>
