@@ -5,6 +5,7 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.db._
 import play.api.libs.EventSource
+import play.api.libs.EventSource.EventNameExtractor
 import play.api.libs.iteratee.Concurrent
 import play.api.libs.iteratee.Enumeratee
 import play.api.libs.json.JsValue
@@ -49,7 +50,8 @@ object Post extends Controller {
 
           Logger.info(s"Pushing $threadId onto threadChannel")
           Logger.info(s"data: $threadId")
-          threadChannel.push("data: " + threadId)
+
+          threadChannel.push(threadId.toString)
 
           Redirect(routes.Thread.show(boardShortName, thread.id))
         }
@@ -65,6 +67,9 @@ object Post extends Controller {
 
   def feed(threadId: Int) = Action {
     Logger.info(s"Streaming for $threadId")
+    implicit val eventNameExtractor: EventNameExtractor[String] = EventNameExtractor[String](
+      eventName = (in) => Some(threadId.toString)
+    )
     Ok.stream(postsOut &> filter(threadId) &> Concurrent.buffer(20) &> EventSource()).as("text/event-stream")
   }
 }

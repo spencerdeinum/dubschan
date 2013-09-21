@@ -4,16 +4,15 @@ Dubschan.printMessage = function(message) {
 	console.log(message);
 };
 
-Dubschan.listenToPostFeed = function(postFeedUrl) {
+Dubschan.listenToPostFeed = function(postFeedUrl, eventName) {
 	postFeed = new EventSource(postFeedUrl);
-	postFeed.addEventListener("message", function(msg) {
-		console.log(msg);
-	}, false);
+	postFeed.addEventListener(eventName, Dubschan.printMessage, false);
 };
 
 $(function() {
 	var postFeedUrl = $('#post-feed-url').val();
-	if(postFeedUrl) {
-		Dubschan.listenToPostFeed(postFeedUrl);
+	var eventName = $('#post-event-name').val();
+	if(postFeedUrl && eventName) {
+		Dubschan.listenToPostFeed(postFeedUrl, eventName);
 	}
 });
