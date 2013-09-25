@@ -8,7 +8,7 @@ import play.api.libs.EventSource
 import play.api.libs.EventSource.EventNameExtractor
 import play.api.libs.iteratee.Concurrent
 import play.api.libs.iteratee.Enumeratee
-import play.api.libs.json.JsValue
+import play.api.libs.json._
 import play.api.mvc._
 import play.api.Play.current
 
@@ -46,12 +46,16 @@ object Post extends Controller {
           }
 
           val now = new java.sql.Timestamp( (new java.util.Date()).getTime() )
-          val post = Posts.forInsert insert((thread.id, now, content, imageName))
+          val post = Posts.forInsert returning Posts insert((thread.id, now, content, imageName))
 
-          Logger.info(s"Pushing $threadId onto threadChannel")
-          Logger.info(s"data: $threadId")
+          val message = Json.obj(
+            "threadId"  -> threadId,
+            "html"      -> views.html.post(post).toString
+          )
 
-          threadChannel.push(threadId.toString)
+          Logger.info(s"Pushing $message.toString")
+
+          threadChannel.push(message)
 
           Redirect(routes.Thread.show(boardShortName, thread.id))
         }
@@ -59,17 +63,17 @@ object Post extends Controller {
     )
   }
 
-  val (postsOut, threadChannel) = Concurrent.broadcast[String]
+  val (postsOut, threadChannel) = Concurrent.broadcast[JsValue]
 
-  def filter(threadId: Int) = Enumeratee.filter[String] {
-    message: String => message.contains(threadId.toString)
+  def filter(threadId: Int) = Enumeratee.filter[JsValue] {
+    json => {
+      val int = (json \ "threadId").as[Int]
+      int == threadId
+    }
   }
 
   def feed(threadId: Int) = Action {
     Logger.info(s"Streaming for $threadId")
-    implicit val eventNameExtractor: EventNameExtractor[String] = EventNameExtractor[String](
-      eventName = (in) => Some(threadId.toString)
-    )
     Ok.stream(postsOut &> filter(threadId) &> Concurrent.buffer(20) &> EventSource()).as("text/event-stream")
   }
 }

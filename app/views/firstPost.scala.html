@@ -1,7 +1,13 @@
-@(post: models.Post)
-
-<div class='small-12 columns post'>
-  <h5>@post.createdAt - @post.id</h5>
+@(thread: models.Thread, post: models.Post, link: Option[String])
+<div class='small-12 columns first post'>
+  <h4>@thread.title - @thread.createdAt - @post.id
+    @link match {
+      case Some(link) => {
+        <a href='@link'>View</a>
+      }
+      case _ => {}
+    }
+  </h4>
   @post.s3Url match {
     case Some(s3Url) => {
       <div class='row'>
