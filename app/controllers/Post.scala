@@ -1,9 +1,11 @@
 package controllers
 
+
 import play.api._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.db._
+import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.EventSource
 import play.api.libs.EventSource.EventNameExtractor
 import play.api.libs.iteratee.Concurrent
@@ -21,6 +23,7 @@ import Database.threadLocalSession
 
 import libraries.ImageUploader
 import libraries.Forms
+
 
 object Post extends Controller {
 
@@ -74,6 +77,6 @@ object Post extends Controller {
 
   def feed(threadId: Int) = Action {
     Logger.info(s"Streaming for $threadId")
-    Ok.stream(postsOut &> filter(threadId) &> Concurrent.buffer(20) &> EventSource()).as("text/event-stream")
+    Ok.chunked(postsOut &> filter(threadId) &> Concurrent.buffer(20) &> EventSource()).as("text/event-stream")
   }
 }
